@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Vue Draggable with MultiDrag</title>
+  <script src='https://cdn.tailwindcss.com'></script>
+  <script type='importmap'>
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js",
+        "sortablejs": "https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/+esm"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="back py-3">
+    <a href='./' class='bg-amber-600 text-white py-2 px-4 rounded'>Index</a>
+    <a href='./vue-bootstrap.html' class='bg-blue-600 text-white py-2 px-4 rounded'>View Vue + Bootstrap 5</a>
+    <a href="./bootstrap.html" class="bg-blue-600 text-white py-2 px-4 rounded">View Bootstrap 5</a>
+    <a href="./tailwindcss.html" class="bg-blue-600 text-white py-2 px-4 rounded">View Tailwind CSS</a>
+  </div>
+  <div id='app'></div>
+
+  <div class='hidden' id='app-template'>
+    <div id='shared-lists' class='px-8 mx-auto max-w-screen-lg'>
+      <h1 class='font-bold leading-snug tracking-normal text-slate-800 my-6 w-full text-2xl lg:max-w-3xl mx-auto lg:text-4xl text-center'>Column Settings</h1>
+      <div role='alert' class='mb-4 relative flex w-full p-3 text-sm text-white bg-blue-600 rounded-md'>
+        {{ storedLeftItems }}
+      </div>
+      <div role='alert' class='mb-4 relative flex w-full p-3 text-sm text-white bg-green-600 rounded-md'>
+        {{ storedRightItems }}
+      </div>
+
+      <div class='flex flex-col sm:flex-row justify-between gap-8'>
+        <div class='relative w-full sm:w-1/2'>
+          <h2 class='text-center'>Available Items</h2>
+          <div class='flex flex-col rounded-lg bg-white shadow-sm border border-slate-200'>
+            <nav ref='example2Left' class='list flex flex-col gap-1 p-1.5 min-h-[150px]'>
+              <div
+                v-for='(item, index) in leftItems' 
+                role='button'
+                :data-id='item.id'
+                class='text-slate-800 flex w-full items-center rounded-md p-3 transition-all hover:bg-blue-400 bg-slate-100 active:bg-blue-400'
+              >{{ item.name }}</div>
+            </nav>
+
+            <div class='px-2 justify-between buttons flex-col flex gap-2 my-3 max-sm:flex-row min-[790px]:flex-row max-[380px]:flex-col min-[720px]:flex-row'>
+              <button type='button' class='moveAllFromLeft hidden sm:inline-block rounded-md bg-red-600 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-red-700 focus:shadow-none active:bg-red-700 hover:bg-red-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' @click='moveAllFromLeft'>Move all to right</button>
+              <button type='button' class='moveAllFromLeft inline-block sm:hidden rounded-md bg-red-600 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-red-700 focus:shadow-none active:bg-red-700 hover:bg-red-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' @click='moveAllFromLeft'>Move all to bottom</button>
+              <button type='button' class='rounded-md bg-blue-600 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-none active:bg-blue-700 hover:bg-blue-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' @click='sortList(true)'>Sort list</button>
+            </div>
+          </div>
+        </div>
+
+        <div class='relative w-full sm:w-1/2'>
+          <h2 class='text-center'>Selected Items</h2>
+          <div class='flex flex-col rounded-lg bg-white shadow-sm border border-slate-200'>
+            <nav ref='example2Right' class='list flex flex-col gap-1 p-1.5 min-h-[150px]'>
+              <div
+                v-for='(item, index) in rightItems' 
+                role='button'
+                :data-id='item.id'
+                class='text-slate-800 flex w-full items-center rounded-md p-3 transition-all hover:bg-blue-400 bg-slate-100 active:bg-blue-400'
+              >{{ item.name }}</div>
+            </nav>
+
+            <div class='px-2 justify-between buttons flex-col flex gap-2 my-3 max-sm:flex-row min-[790px]:flex-row max-[380px]:flex-col min-[720px]:flex-row'>
+              <button type='button' class='moveAllFromRight hidden sm:inline-block rounded-md bg-red-600 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-red-700 focus:shadow-none active:bg-red-700 hover:bg-red-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' @click='moveAllFromRight'>Move all to left</button>
+              <button type='button' class='moveAllFromRight sm:hidden inline-block rounded-md bg-red-600 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-red-700 focus:shadow-none active:bg-red-700 hover:bg-red-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' @click='moveAllFromRight'>Move all to top</button>
+              <button type='button' class='rounded-md bg-blue-600 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-none active:bg-blue-700 hover:bg-blue-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none' @click='sortList(false)'>Sort list</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type='module' src='app-tailwindcss.js'></script>
+</body>
+</html>
